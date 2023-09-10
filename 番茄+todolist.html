@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>番茄闹钟</title>
+  <style>
+    body {
+      background-image: url("2.jpg");
+      background-size: cover;
+      background-repeat: no-repeat;
+    }
+
+    #countdown {
+      text-align: center;
+      font-size: 50px;
+    }
+
+    #beijingTime {
+      text-align: center;
+      font-size: 40px;
+      position: fixed;
+      top: 0%;
+      left: 50%;
+      transform: translateX(-50%);
+    }
+
+    #elapsedTime {
+      text-align: center;
+      font-size: 30px;
+    }
+
+    #customImage {
+      display: none;
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 480px;
+      height: 270px;
+    }
+
+    .showImage {
+      display: block;
+    }
+
+    #todoContainer {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      position: fixed;
+      top: 50%;
+      left: 20px;
+      transform: translateY(-50%);
+      width: 300px;
+      overflow: hidden;
+    }
+
+    #todoList {
+      max-height: 400px;
+      overflow-y: auto;
+      overflow-x: hidden; /* 隐藏水平滚动条 */
+    }
+
+    #todoList input[type="text"] {
+      width: 100%;
+      padding: 5px;
+      margin-bottom: 10px;
+    }
+
+    #todoList ul {
+      list-style-type: none;
+      padding: 0;
+    }
+
+    #todoList li {
+      margin-bottom: 5px;
+    }
+
+    #todoList li input[type="checkbox"] {
+      margin-right: 5px;
+    }
+  </style>
+  <script>
+    var initialTime = 0;
+    var timer;
+
+    function startTimer() {
+      var inputTime = document.getElementById("inputTime").value;
+      var timeInSeconds = parseInt(inputTime) * 60;
+      var elapsedTime = 0;
+      clearInterval(timer);
+      timer = setInterval(function() {
+        var minutes = Math.floor(timeInSeconds / 60);
+        var seconds = timeInSeconds % 60;
+        document.getElementById("countdown").innerHTML = minutes + " 分钟 " + seconds + " 秒";
+        document.getElementById("elapsedTime").innerHTML = "已经过去：" + elapsedTime + " 秒";
+        timeInSeconds--;
+        elapsedTime++;
+        if (timeInSeconds < 0) {
+          clearInterval(timer);
+          document.getElementById("countdown").innerHTML = "倒计时结束！";
+          showCustomImage();
+          playAlarm();
+        }
+      }, 1000);
+    }
+
+    function resetTime() {
+      clearInterval(timer);
+      var inputTime = document.getElementById("inputTime");
+      inputTime.value = "";
+      document.getElementById("countdown").innerHTML = "0 分钟 0 秒";
+      document.getElementById("elapsedTime").innerHTML = "已经过去：0 秒";
+    }
+
+    function playAlarm() {
+      var audio = new Audio("1.mp3");
+      audio.play();
+    }
+
+    function showCustomImage() {
+      var customImage = document.getElementById("customImage");
+      customImage.classList.add("showImage");
+    }
+
+    function displayBeijingTime() {
+      var date = new Date();
+      var options = { timeZone: "Asia/Shanghai" };
+      var beijingTime = date.toLocaleString("zh-CN", options);
+      document.getElementById("beijingTime").innerHTML = beijingTime;
+    }
+
+    function addTodo() {
+      var todoInput = document.getElementById("todoInput");
+      var todoList = document.getElementById("todoList");
+      var todoItem = document.createElement("li");
+      var checkbox = document.createElement("input");
+      checkbox.type = "checkbox";
+      var label = document.createElement("label");
+      label.innerHTML = todoInput.value;
+      todoItem.appendChild(checkbox);
+      todoItem.appendChild(label);
+      todoList.appendChild(todoItem);
+      todoInput.value = "";
+    }
+
+    setInterval(displayBeijingTime, 1000);
+  </script>
+</head>
+<body>
+  <h1>番茄闹钟</h1>
+  <label for="inputTime">请输入倒计时时间（分钟）：</label>
+  <input type="number" id="inputTime" min="1" value="25">
+  <button onclick="startTimer()">开始倒计时</button>
+  <button onclick="resetTime()">重置时间</button>
+  <p id="countdown"></p>
+  <p id="elapsedTime"></p>
+  <div id="beijingTime"></div>
+  <div id="todoContainer">
+    <div id="todoList">
+      <h2>待办事项</h2>
+      <input type="text" id="todoInput" placeholder="添加新的待办事项">
+      <button onclick="addTodo()">添加</button>
+      <ul></ul>
+    </div>
+  </div>
+  <img id="customImage" src="3.jpg" alt="Custom Image">
+</body>
+</html>

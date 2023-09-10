@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>番茄闹钟</title>
+  <style>
+    body {
+      background-image: url("2.jpg");
+      background-size: cover;
+      background-repeat: no-repeat;
+    }
+
+    #countdown {
+      text-align: center;
+      font-size: 50px;
+    }
+
+    #beijingTime {
+      text-align: center;
+      font-size: 40px;
+      position: fixed;
+      top: 0%;
+      left: 50%;
+      transform: translateX(-50%);
+    }
+
+    #elapsedTime {
+      text-align: center;
+      font-size: 30px;
+    }
+
+    #customImage {
+      display: none;
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 480px;
+      height: 270px;
+    }
+
+    .showImage {
+      display: block;
+    }
+  </style>
+  <script>
+    function startTimer() {
+      var inputTime = document.getElementById("inputTime").value;
+      var timeInSeconds = parseInt(inputTime) * 60;
+      var elapsedTime = 0;
+      var timer = setInterval(function() {
+        var minutes = Math.floor(timeInSeconds / 60);
+        var seconds = timeInSeconds % 60;
+        document.getElementById("countdown").innerHTML = minutes + " 分钟 " + seconds + " 秒";
+        document.getElementById("elapsedTime").innerHTML = "已经过去：" + elapsedTime + " 秒";
+        timeInSeconds--;
+        elapsedTime++;
+        if (timeInSeconds < 0) {
+          clearInterval(timer);
+          document.getElementById("countdown").innerHTML = "倒计时结束！";
+          showCustomImage();
+          playAlarm();
+        }
+      }, 1000);
+    }
+
+    function playAlarm() {
+      var audio = new Audio("1.mp3"); // 替换为你的音频文件路径
+      audio.play();
+    }
+
+    function displayBeijingTime() {
+      var date = new Date();
+      var options = { timeZone: "Asia/Shanghai" };
+      var beijingTime = date.toLocaleString("zh-CN", options);
+      document.getElementById("beijingTime").innerHTML = beijingTime;
+    }
+
+    function showCustomImage() {
+      var customImage = document.getElementById("customImage");
+      customImage.classList.add("showImage");
+      customImage.style.display = "block";
+    }
+
+    setInterval(displayBeijingTime, 1000);
+  </script>
+</head>
+<body>
+  <h1>番茄闹钟</h1>
+  <label for="inputTime">请输入倒计时时间（分钟）：</label>
+  <input type="number" id="inputTime" min="1" value="25">
+  <button onclick="startTimer()">开始倒计时</button>
+  <p id="countdown"></p>
+  <p id="elapsedTime"></p>
+  <div id="beijingTime"></div>
+  <img id="customImage" src="3.jpg" alt="Custom Image">
+</body>
+</html>
